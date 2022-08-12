@@ -15,23 +15,7 @@ class IngredientController extends Controller
     public function index()
     {
         $ingredients = Ingredient::get(['id', 'name', 'description']);
-        return response()->json ($ingredients);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        $new_ingredient = $request->description;
-
-        $ingredient = new Ingredient($new_ingredient);
-
-        $ingredient->save();
-
-        return($ingredient);
+        return response()->json($ingredients);
     }
 
     /**
@@ -42,8 +26,9 @@ class IngredientController extends Controller
      */
     public function store(Request $request)
     {
-        $ingredient = new Ingredient(['name' => $request->input('name'),'description' => $request->input('description')]);
+        $ingredient = new Ingredient(['name' => $request->input('name'), 'description' => $request->input('description')]);
         $ingredient->save();
+
         return response()->json('Ingredient created!');
     }
 
@@ -60,17 +45,6 @@ class IngredientController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -79,21 +53,11 @@ class IngredientController extends Controller
      */
     public function update(Request $request)
     {
-        
         $ingredient = $request;
-        
-        
-        if ($ingredient->id)
-        {
-            $this->validate($request, [
-                'name' => 'required',
-                'description' => 'required'
-            ]);
-            $ingredient = Ingredient::where('id', '=', $ingredient->id)->update($request->only('name'), $request->only('description'));
-            return response()->json($ingredient);
-        }
-        return ($this->create($request));
 
+        $ingredient = Ingredient::find($ingredient->id);
+        $ingredient->update($request->all());
+        return response()->json('Ingredient updated!');
     }
 
     /**
@@ -104,8 +68,24 @@ class IngredientController extends Controller
      */
     public function destroy($id)
     {
-        $ingredient = Ingredient::where('id', '=', $id)->delete();
+        $recipeIngredientController = new RecipeIngredientController();
+        $recipeIngredient           = $recipeIngredientController->search(null, $id);
 
-        return $ingredient;
+        if ($recipeIngredient)
+        {
+            $response['status']  = 0;
+            $response['message'] = 'Ingredient can\'t be deleted!';
+
+        }
+        else
+        {
+            $ingredient          = Ingredient::where('id', '=', $id)->delete();
+
+            $response['status']  = 1;
+            $response['message'] = 'Ingredient deleted!';
+        }
+
+
+        return response()->json($response);
     }
 }

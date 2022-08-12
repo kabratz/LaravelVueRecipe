@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
     <h2 class="text-center">{{ $t('recipes_list') }}</h2>
 
     <router-link :to="{ name: 'create.recipe' }" class="btn btn-success">{{ $t('new') }}</router-link>
@@ -20,7 +20,9 @@
           <td>{{ recipe.description }}</td>
           <td>
             <div class="btn-group" role="group">
-              <router-link :to="{ name: 'edit.recipe', params: { id: recipe.id } }" class="btn btn-success">{{ $t('edit') }}
+              <router-link :to="{ name: 'edit.recipe', params: { id: recipe.id } }" class="btn btn-success">{{
+                  $t('edit')
+              }}
               </router-link>
               <button class="btn btn-danger" @click="deleteRecipe(recipe.id)">{{ $t('delete') }}</button>
             </div>
@@ -29,11 +31,19 @@
       </tbody>
     </table>
   </div>
+  <div v-else>
+    {{ $t('you_are_not_logged_in') }}
+  </div>
 </template>
  
 <script>
 
+import { mapGetters } from 'vuex'
 export default {
+
+  computed: mapGetters({
+    user: 'auth/user'
+  }),
 
   mounted()//NESSA FUNCAO DEVE SER PREENCHIDA A COMBO BUSCANDO DADOS DE API, BEM COMO A TABELA CASO A RECIPE JA TENHA INGREDIENTES
   {
@@ -56,10 +66,12 @@ export default {
         });
     },
     deleteRecipe(id) {
-      this.axios.delete('http://localhost:8000/api/recipe/' + id).then(response => {
-        let i = this.recipes.map(data => data.id).indexOf(id);
-        this.recipes.splice(i, 1)
-      });
+      if (confirm('Are you sure?')) {
+        this.axios.delete('http://localhost:8000/api/recipe/' + id).then(response => {
+          let i = this.recipes.map(data => data.id).indexOf(id);
+          this.recipes.splice(i, 1)
+        });
+      }
     }
 
   }

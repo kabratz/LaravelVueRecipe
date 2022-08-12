@@ -1,7 +1,7 @@
 {
-    "name": "cretueusebiu/laravel-vue-spa",
-    "description": "A Laravel-Vue SPA starter project template.",
-    "keywords": ["spa", "laravel", "vue"],
+    "name": "projects/laravel-vue-recipe-crud",
+    "description": "A Laravel-Vue Recipe Crud.",
+    "keywords": ["recipe", "laravel", "vue"],
     "license": "MIT",
     "type": "project",
     "require": {

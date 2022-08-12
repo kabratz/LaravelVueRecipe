@@ -1,17 +1,17 @@
 <?php
 
-use App\Http\Controllers\SpaController;
+use App\Http\Controllers\RecipeController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| SPA Routes
+| Recipe Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register SPA routes for your frontend. These
+| Here is where you can register Recipe routes for your frontend. These
 | routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "spa" middleware group.
+| is assigned the "recipe" middleware group.
 |
 */
 
-Route::get('{path}', SpaController::class)->where('path', '(.*)');
+Route::get('{path}', RecipeController::class)->where('path', '(.*)');

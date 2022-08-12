@@ -9,7 +9,8 @@
           <div class="mb-3 row">
             <label class="col-md-3 col-form-label text-md-end">{{ $t('email') }}</label>
             <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
+              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control"
+                type="email" name="email">
               <has-error :form="form" field="email" />
             </div>
           </div>
@@ -34,7 +35,7 @@ import Form from 'vform'
 export default {
   middleware: 'guest',
 
-  metaInfo () {
+  metaInfo() {
     return { title: this.$t('verify_email') }
   },
 
@@ -45,14 +46,14 @@ export default {
     })
   }),
 
-  created () {
+  created() {
     if (this.$route.query.email) {
       this.form.email = this.$route.query.email
     }
   },
 
   methods: {
-    async send () {
+    async send() {
       const { data } = await this.form.post('/api/email/resend')
 
       this.status = data.status

@@ -19,16 +19,6 @@ class RecipeIngredientController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -36,17 +26,16 @@ class RecipeIngredientController extends Controller
      */
     public function store(Request $request)
     {
-        return $request;
-        $new_recipe_ingredient = [
-            'order'         => $request,
-            'kg_quantity'   => 100.00,
-            'recipe_id'     => 1,
-            'ingredient_id' => 1
-        ];
 
-        $recipe_ingredient = new RecipeIngredient($new_recipe_ingredient);
-        $recipe_ingredient->save();
-        return response()->json($recipe_ingredient->id);
+        $new_recipe_ingredient = new RecipeIngredient([
+            'order'         => $request->name,
+            'kg_quantity'   => $request->kg_quantity,
+            'recipe_id'     => $request->recipe_id,
+            'ingredient_id' => $request->ingredient_id
+        ]);
+
+        $new_recipe_ingredient->save();
+        return response()->json($new_recipe_ingredient->id);
     }
 
     /**
@@ -61,15 +50,36 @@ class RecipeIngredientController extends Controller
         return $recipe_ingredients;
     }
 
+
     /**
-     * Show the form for editing the specified resource.
+     * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function search($recipe_id = null, $ingredient_id = null)
     {
-        //
+        if ($recipe_id)
+        {
+            $recipe_ingredients = RecipeIngredient::where('recipe_id', '=', $recipe_id)->get();
+        }
+
+        if ($ingredient_id)
+        {
+            $recipe_ingredients = RecipeIngredient::where('ingredient_id', '=', $ingredient_id)->get();
+        }
+
+        if (sizeof($recipe_ingredients))
+        {
+            foreach ($recipe_ingredients as $recipe_ingredient)
+            {
+                $ingredientController                = new IngredientController();
+                $ingredient                          = $ingredientController->show($recipe_ingredient->ingredient_id);
+                $recipe_ingredient->ingredient_name  = $ingredient ? $ingredient->name : 'Item inexistente ou deletado';
+            }
+            return $recipe_ingredients;
+        }
+        return null;
     }
 
     /**
@@ -79,14 +89,10 @@ class RecipeIngredientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($request, $id)
     {
-        $recipe_ingredient = RecipeIngredient::where('id', '=', $id)->update([
-            'order'         => 5,
-            'kg_quantity'   => 100.00,
-            'recipe_id'     => 1,
-            'ingredient_id' => 1
-        ]);
+        $recipe_ingredient = RecipeIngredient::find($id);
+        $recipe_ingredient->update($request->all());
 
         return $recipe_ingredient;
     }

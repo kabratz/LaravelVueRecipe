@@ -8,6 +8,15 @@ use App\Models\RecipeIngredient;
 
 class RecipeController extends Controller
 {
+
+    /**
+     * Get the recipe view.
+     */
+    public function __invoke()
+    {
+        return view('recipe');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,16 +29,6 @@ class RecipeController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -37,26 +36,26 @@ class RecipeController extends Controller
      */
     public function store(Request $request)
     {
-        // return($request[0]['name']);
         $recipe = new Recipe([
-            'name'      => $request[0]['name'],
+            'name'        => $request[0]['name'],
             'description' => $request[0]['description']
         ]);
+
         $recipe->save();
 
-        foreach ($request[1] as $dataRecipeIngredient) {
+        foreach ($request[1] as $dataRecipeIngredient) 
+        {
 
             $new_recipe_ingredient = [
                 'order'         => $dataRecipeIngredient['order'],
-                'kg_quantity'   => $dataRecipeIngredient['quantity'],
+                'kg_quantity'   => $dataRecipeIngredient['kg_quantity'],
                 'recipe_id'     => $recipe->id,
-                'ingredient_id' => $dataRecipeIngredient['igredient_id']
+                'ingredient_id' => $dataRecipeIngredient['ingredient_id']
             ];
 
-            $recipe_ingredient                = new RecipeIngredient($new_recipe_ingredient);
+            $recipe_ingredient = new RecipeIngredient($new_recipe_ingredient);
             $recipe_ingredient->save();
 
-            // return ($recipe_ingredient->id);
         }
         return response()->json('Receita Salva com Sucesso!!');
     }
@@ -69,19 +68,11 @@ class RecipeController extends Controller
      */
     public function show($id)
     {
-        $recipes = Recipe::find($id);
-        return $recipes;
-    }
+        $recipes                    = Recipe::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $recipes = Recipe::find($id);
+        $recipeIngredientController = new RecipeIngredientController();
+        $recipes->recipeIngredient  = $recipeIngredientController->search($id);
+        
         return $recipes;
     }
 
@@ -94,11 +85,57 @@ class RecipeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $recipe = Recipe::where('id', '=', $id)->update([
-            'description' => 'Teste2'
-        ]);
+        $recipe = Recipe::find($id);
+        $recipe->update($request->all());
 
-        return $recipe;
+        if ($request->recipeIngredients) 
+        {
+            foreach ($request->recipeIngredients as $dataRecipeIngredient) 
+            {
+
+                if (!($dataRecipeIngredient['id'])) 
+                {
+                    $new_recipe_ingredient = [
+                        'order'         => $dataRecipeIngredient['order'],
+                        'kg_quantity'   => $dataRecipeIngredient['kg_quantity'],
+                        'recipe_id'     => $request->id,
+                        'ingredient_id' => $dataRecipeIngredient['ingredient_id']
+                    ];
+
+                    $this->createNewRecipeIngredient($new_recipe_ingredient);
+                }
+            }
+        }
+
+        if ($request->recipeIngredientsDelete) 
+        {
+            foreach ($request->recipeIngredientsDelete as $dataRecipeIngredient) 
+            {
+
+                if (($dataRecipeIngredient['id'])) 
+                {
+                    $recipeIngredientController = new RecipeIngredientController();
+                    $recipeIngredientController->destroy($dataRecipeIngredient['id']);
+                }
+            }
+        }
+
+
+        return response()->json('Recipe updated!');
+
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  array  $recipeIngredient
+     */
+    public function createNewRecipeIngredient($recipeIngredient)
+    {
+        $recipe_ingredient = new RecipeIngredient($recipeIngredient);
+        $recipe_ingredient->save();
+
+        return $recipe_ingredient;
     }
 
     /**
@@ -109,6 +146,17 @@ class RecipeController extends Controller
      */
     public function destroy($id)
     {
+        $recipeIngredientController = new RecipeIngredientController();
+        $recipeIngredients          = $recipeIngredientController->search($id, null);
+
+        if ($recipeIngredients) 
+        {
+            foreach($recipeIngredients as $recipeIngredient)
+            {
+                $recipeIngredientController->destroy($recipeIngredient->id);
+            }
+        }
+
         $recipe = Recipe::where('id', '=', $id)->delete();
 
         return $recipe;

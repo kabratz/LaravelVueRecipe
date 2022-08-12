@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
     <h2 class="text-center">{{ $t('ingredients_list') }}</h2>
 
     <router-link :to="{ name: 'create.ingredient' }" class="btn btn-success">{{ $t('new') }}</router-link>
@@ -19,25 +19,36 @@
           <td>{{ ingredient.name }}</td>
           <td>{{ ingredient.description }}</td>
           <td>
+            <!-- Buttons Action -->
             <div class="btn-group" role="group">
-              <router-link :to="{ name: 'edit.ingredient', params: { id: ingredient.id } }" class="btn btn-success">{{
-                  $t('edit')
-              }}</router-link>
-              <button class="btn btn-danger" @click="deleteIngredient(ingredient.id)">{{ $t('delete') }}</button>
+              <!-- Button Edit -->
+              <router-link :to="{ name: 'edit.ingredient', params: { id: ingredient.id } }" class="btn btn-success">
+                {{ $t('edit') }}
+              </router-link>
+
+              <!-- Button Delete -->
+              <button class="btn btn-danger" @click="deleteIngredient(ingredient.id)">
+                {{ $t('delete') }}
+              </button>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+  <div v-else>
+    {{ $t('you_are_not_logged_in') }}
+  </div>
 </template>
  
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
-
-  mounted()//NESSA FUNCAO DEVE SER PREENCHIDA A COMBO BUSCANDO DADOS DE API, BEM COMO A TABELA CASO A RECIPE JA TENHA INGREDIENTES
-  {
+  computed: mapGetters({
+    user: 'auth/user'
+  }),
+  mounted() {
     this.getIngredients();
   },
   data() {
@@ -57,10 +68,16 @@ export default {
         });
     },
     deleteIngredient(id) {
-      this.axios.delete('http://localhost:8000/api/ingredient/' + id).then(response => {
-        let i = this.ingredients.map(data => data.id).indexOf(id);
-        this.ingredients.splice(i, 1)
-      });
+      if (confirm('Are you sure?')) {
+        this.axios.delete('http://localhost:8000/api/ingredient/' + id).then(response => {
+          if (response.data.status) {
+            let i = this.ingredients.map(data => data.id).indexOf(id);
+            this.ingredients.splice(i, 1)
+          } else {
+            alert(response.data.message)
+          }
+        });
+      }
     }
 
   }

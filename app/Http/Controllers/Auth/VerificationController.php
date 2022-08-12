@@ -24,13 +24,15 @@ class VerificationController extends Controller
      */
     public function verify(Request $request, User $user)
     {
-        if (! URL::hasValidSignature($request)) {
+        if (! URL::hasValidSignature($request)) 
+        {
             return response()->json([
                 'status' => trans('verification.invalid'),
             ], 400);
         }
 
-        if ($user->hasVerifiedEmail()) {
+        if ($user->hasVerifiedEmail()) 
+        {
             return response()->json([
                 'status' => trans('verification.already_verified'),
             ], 400);
@@ -54,13 +56,15 @@ class VerificationController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (is_null($user)) {
+        if (is_null($user)) 
+        {
             throw ValidationException::withMessages([
                 'email' => [trans('verification.user')],
             ]);
         }
 
-        if ($user->hasVerifiedEmail()) {
+        if ($user->hasVerifiedEmail()) 
+        {
             throw ValidationException::withMessages([
                 'email' => [trans('verification.already_verified')],
             ]);

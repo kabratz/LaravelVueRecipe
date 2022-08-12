@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-black">
     <div class="container">
       <router-link :to="{ name: user ? 'home' : 'welcome' }" class="navbar-brand">
         {{ appName }}
@@ -12,15 +12,12 @@
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="navbar-nav">
           <locale-dropdown />
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li> -->
         </ul>
 
         <ul class="navbar-nav ms-auto">
           <!-- Authenticated -->
           <li v-if="user" class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown"
+            <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
               <img :src="user.photo_url" class="rounded-circle profile-photo me-1">
               {{ user.name }}
@@ -29,16 +26,6 @@
               <router-link :to="{ name: 'settings.profile' }" class="dropdown-item ps-3">
                 <fa icon="cog" fixed-width />
                 {{ $t('settings') }}
-              </router-link>
-
-              <router-link :to="{ name: 'edit.ingredient' }" class="dropdown-item ps-3">
-                <fa icon="cog" fixed-width />
-                {{ $t('ingredients') }}
-              </router-link>
-
-              <router-link :to="{ name: 'edit.recipe' }" class="dropdown-item ps-3">
-                <fa icon="cog" fixed-width />
-                {{ $t('recipe') }}
               </router-link>
 
               <div class="dropdown-divider" />

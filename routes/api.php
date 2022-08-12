@@ -38,14 +38,20 @@ Route::middleware('api')->group(function () {
 });
 
 Route::middleware('api')->group(function () {
-    Route::resource('recipeIngrediient', RecipeIngredientController::class);
+    Route::resource('recipeIngredient', RecipeIngredientController::class);
 });
+
+
+Route::middleware('api')->group(function () {
+    Route::get('teste', [RecipeIngredientController::class, 'teste']);
+});
+
+
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
 
     Route::get('user', [UserController::class, 'current']);
-    Route::get('ingredoute::get(ient', [IngredientController::class, 'index']);
 
     Route::patch('settings/profile', [ProfileController::class, 'update']);
     Route::patch('settings/password', [PasswordController::class, 'update']);

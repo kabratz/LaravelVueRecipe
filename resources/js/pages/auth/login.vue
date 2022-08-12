@@ -7,7 +7,8 @@
           <div class="mb-3 row">
             <label class="col-md-3 col-form-label text-md-end">{{ $t('email') }}</label>
             <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
+              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control"
+                type="email" name="email">
               <has-error :form="form" field="email" />
             </div>
           </div>
@@ -16,7 +17,8 @@
           <div class="mb-3 row">
             <label class="col-md-3 col-form-label text-md-end">{{ $t('password') }}</label>
             <div class="col-md-7">
-              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
+              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control"
+                type="password" name="password">
               <has-error :form="form" field="password" />
             </div>
           </div>
@@ -42,8 +44,7 @@
                 {{ $t('login') }}
               </v-button>
 
-              <!-- GitHub Login Button -->
-              <login-with-github />
+              
             </div>
           </div>
         </form>
@@ -55,16 +56,14 @@
 <script>
 import Form from 'vform'
 import Cookies from 'js-cookie'
-import LoginWithGithub from '~/components/LoginWithGithub'
 
 export default {
   components: {
-    LoginWithGithub
   },
 
   middleware: 'guest',
 
-  metaInfo () {
+  metaInfo() {
     return { title: this.$t('login') }
   },
 
@@ -77,7 +76,7 @@ export default {
   }),
 
   methods: {
-    async login () {
+    async login() {
       // Submit the form.
       const { data } = await this.form.post('/api/login')
 
@@ -94,7 +93,7 @@ export default {
       this.redirect()
     },
 
-    redirect () {
+    redirect() {
       const intendedUrl = Cookies.get('intended_url')
 
       if (intendedUrl) {

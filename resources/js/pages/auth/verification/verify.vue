@@ -31,7 +31,7 @@ import axios from 'axios'
 const qs = (params) => Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
 
 export default {
-  async beforeRouteEnter (to, from, next) {
+  async beforeRouteEnter(to, from, next) {
     try {
       const { data } = await axios.post(`/api/email/verify/${to.params.id}?${qs(to.query)}`)
 
@@ -43,7 +43,7 @@ export default {
 
   middleware: 'guest',
 
-  metaInfo () {
+  metaInfo() {
     return { title: this.$t('verify_email') }
   },
 

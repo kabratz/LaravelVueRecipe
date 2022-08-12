@@ -26,7 +26,8 @@ class OAuthProvider extends Model
      * @var array
      */
     protected $hidden = [
-        'access_token', 'refresh_token',
+        'access_token', 
+        'refresh_token',
     ];
 
     /**

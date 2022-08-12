@@ -26,7 +26,8 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, User $user)
     {
-        if ($user instanceof MustVerifyEmail) {
+        if ($user instanceof MustVerifyEmail) 
+        {
             return response()->json(['status' => trans('verification.sent')]);
         }
 
@@ -39,8 +40,8 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email:filter|max:255|unique:users',
+            'name'     => 'required|max:255',
+            'email'    => 'required|email:filter|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -51,8 +52,8 @@ class RegisterController extends Controller
     protected function create(array $data): User
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name'     => $data['name'],
+            'email'    => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
     }

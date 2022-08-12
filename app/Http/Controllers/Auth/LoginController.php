@@ -28,12 +28,14 @@ class LoginController extends Controller
     {
         $token = $this->guard()->attempt($this->credentials($request));
 
-        if (! $token) {
+        if (!$token) 
+        {
             return false;
         }
 
         $user = $this->guard()->user();
-        if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) 
+        {
             return false;
         }
 
@@ -53,7 +55,7 @@ class LoginController extends Controller
         $expiration = $this->guard()->getPayload()->get('exp');
 
         return response()->json([
-            'token' => $token,
+            'token'      => $token,
             'token_type' => 'bearer',
             'expires_in' => $expiration - time(),
         ]);
@@ -66,7 +68,8 @@ class LoginController extends Controller
     {
         $user = $this->guard()->user();
 
-        if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) 
+        {
             throw VerifyEmailException::forUser($user);
         }
 

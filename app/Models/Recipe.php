@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Recipe extends Model
 {
     protected $fillable = [
-        'name','description'
+        'name',
+        'description'
     ];
     use SoftDeletes;
     use HasFactory;
