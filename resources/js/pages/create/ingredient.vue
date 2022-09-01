@@ -15,7 +15,7 @@
             <textarea class="form-control" v-model="ingredient.description"></textarea>
           </div>
           <!-- Button -->
-          <button type="submit" class="btn btn-primary">{{ $t('create') }}</button>
+          <button type="submit" class="btn btn-primary my-3">{{ $t('create') }}</button>
         </form>
       </div>
     </div>
